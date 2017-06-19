@@ -36,6 +36,8 @@ int main(int args, char** argv)
   std::vector<std::string> FileNames(argv+1,argv+args);
   std::vector<TFile*> Files;
   std::set<std::pair<std::string,std::string> > keys;
+  std::map<std::string,std::thread> threads;
+
   for (auto FileName: FileNames)
     {
      TFile* File = TFile::Open(FileName.c_str(),"READ");
@@ -49,17 +51,21 @@ int main(int args, char** argv)
 	      {
 		TList * fkeys2 = dir->GetListOfKeys();
 		for (auto key2:*fkeys2)
-		  keys.insert(std::pair<std::string,std::string>(((TNamed*)key )->GetName(),
-								((TNamed*)key2)->GetName()));
+		  if (keys.insert(std::pair<std::string,std::string>(((TNamed*)key )->GetName(),
+								     ((TNamed*)key2)->GetName())).second)
+		    threads[((TNamed*)key )->GetName()] = std::thread(CopySingleTree,
+								      ((TNamed*)key )->GetName(),
+								      ((TNamed*)key2)->GetName(),FileNames);
+		
+		
 	      }
 	  }
       File->Close();
     }
   //  std::cout << "survived: " << __LINE__ << std::endl; 
-  std::map<std::string,std::thread> threads;
   
-  for (auto key:keys)
-    threads[key.first] = std::thread(CopySingleTree,key.first,key.second,FileNames);
+  //for (auto key:keys)
+  //threads[key.first] = std::thread(CopySingleTree,key.first,key.second,FileNames);
   for (auto t=threads.begin();t!=threads.end();++t)
     t->second.join();
   /*

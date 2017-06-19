@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -c -Wall `root-config --cflags` -g
+CFLAGS = -c -Wall `root-config --cflags` -g 
 LDFLAGS=`root-config --glibs`
 EXECUTABLE=merger
 SOURCES=merger.cpp
