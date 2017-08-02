@@ -4,9 +4,12 @@ def getKerberosDate(hostname):
     proc = subprocess.Popen(osslcmd,stdout=subprocess.PIPE,shell=True)
     (out, err) = proc.communicate()
     for l in out.split("\n"):
-        l = l.replace("201","1") ## 2017 -> 17 ... 
+#        l = l.replace("201","1") ## 2017 -> 17 ... 
         if "afs/cern.ch@CERN.CH" in l:
-            return l[19:36]
+            l1 =  l[l.find(":")+8:]
+            l2 = l1[:l1.find(":")+6]
+            return l2
+
 #    outwithoutreturn = out.rstrip('\n')[9:]    
 #    print out ## debug
 #    pos = outwithoutreturn.find("renew until")
@@ -16,7 +19,11 @@ def getKerberosDate(hostname):
 
 import datetime
 def ConvertDate(inp):
-    return datetime.datetime.strptime(inp,"%m/%d/%y %X")
+    try:
+        return datetime.datetime.strptime(inp,"%m/%d/%Y %X")
+    except ValueError:
+        return datetime.datetime.strptime(inp,"%m/%d/%y %X")
+    #datetime.datetime.strptime(inp,"%b %d %X %Y %Z")
 
 from servers import servers
 
