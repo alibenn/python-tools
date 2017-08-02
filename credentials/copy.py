@@ -11,7 +11,7 @@ import datetime
 def ConvertDate(inp):
     return datetime.datetime.strptime(inp,"%b %d %X %Y %Z")
 
-from servers inport servers
+from servers import servers
 
 def getBest():
     ts = {}
