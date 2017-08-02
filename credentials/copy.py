@@ -11,11 +11,7 @@ import datetime
 def ConvertDate(inp):
     return datetime.datetime.strptime(inp,"%b %d %X %Y %Z")
 
-
-servers = ["lhcbportal",
-           "lhcbwn01",
-           "lhcbwn02",
-           "lhcbwn03"]
+from servers inport servers
 
 def getBest():
     ts = {}
